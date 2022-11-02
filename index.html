@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+  <head>
+    
+    <!-- META -->
+    <meta charset='utf-8' />
+    <meta name='viewport' content='initial-scale=1, maximum-scale=1, user-scalable=no' />
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- TITLE -->
+    <title>NYC Public Sentiment Map</title>
+
+    <!-- STYLE SHEETS -->
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:300,400,600' rel='stylesheet'>
+    <link rel='stylesheet' href='stylesheets/style.css' type='text/css' />
+    <link rel='stylesheet' href='stylesheets/d3.slider.css' type='text/css' />
+
+    <!-- D3 -->
+    <script src='scripts/d3.min.js'></script>
+    <script src='scripts/d3.slider.js'></script>
+
+    <!-- MapBox -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id='header'>
+
+      <!-- HEADER/ABOUT-LINK -->
+      <div id='about-link'>
+        <span class='desktop'>About</span>
+      </div>
+
+      <!-- HEADER/LEGEND-MOBILE -->
+      <div id='legend-mobile'></div>
+
+      <!-- HEADER/MODES -->
+      <div id='modes'>
+
+        <div class='mode-selected' id='mode-story'>
+          <span class='desktop'>Story</span>
+          <span class='mobile'>Story</span>
+        </div>
+
+        <div class='mode' id='mode-viz'>
+          <span class='desktop'>Visualization</span>
+          <span class='mobile'>Viz</span>
+        </div>
+      </div>
+
+      <!-- HEADER/TITLE -->
+      <div id='title'>
+        <span class='desktop' style="font-weight: bold;">NYC Public Sentiment Map</span>
+      </div>
+
+    </div>
+
+    <!-- ABOUT -->
+    <div class='about' id='about'>
+
+      <!-- ABOUT/CLOSE -->
+      <div id = 'about-close'></div>
+      
+      <!-- ABOUT/CONTENT -->
+      <div id='about-content'>
+
+        <!-- ABOUT/CONTENT/HEADER -->
+        <div id = 'about-header'>Public Sentiment Map of New York City </div>
+
+        <!-- ABOUT/CONENT/TEXT -->
+        <div id = 'about-text'>
+          
+          <p>
+            This map was one part of the capstone project of my MS degree in Geospatial Information Science. The visualization is a model of the dynamic public sentiment of New York City for a typical week in October 2019.
+          </p>
+          
+          <p>
+            Big data from social media can make large profit and benefit daily life. However, current research and application focus on the descriptive analysis of the public sentiment lacking of the spatiotemporal pattern of sentiment polarity with quantitative analysis. In this capstone project, the spatial and temporal pattern of sentiment distribution of twitter data was analyzed to understand the spatial and temporal distribution of public happiness within New York City with a multivariate linear mixed-effect model. The twitter data was retrieved with Twitter Streaming API from October 14, 2019 to October 20, 2019 and cleaned with NLTK tool and regular regression. The Sentiment analysis was implemented with a deep learning model with LSTM neural network. The fixed effect of land use and time period to the sentiment score was investigated with a multivariate linear mixed-effects model. Finally, the tweets with sentiment score were visualized as a Web GIS Application. 43693 tweets were left in the NYC region after the data cleaning and spatial processing. The sentiment analysis result showed that half of the sentiment were positive (53.01%) and the other half were neutral (34.57%) and negative (12.42%).  The result of linear mixed-effect model indicated the significant effect of time period, days of the week and land use type on the sentiment score. Among these fixed effects, the effect of land use categories was the largest. The result of the fixed effect revealed that the sentiment decreased by 0.084362 in the transportation area during late night on Friday than the sentiment in the recreation area before dawn on Saturday.
+          </p>
+
+                   <!-- ABOUT/CONENT/TEXT/CREDITS -->
+          <div id='about-credits'>
+            <p>
+              <br/>Design, Development, Data & Modelling - <a href='http://www.terpconnect.umd.edu/~cjycathy/cathy/'>Jinyi Cai</a> 
+              <br/>Map engine - <a href='https://www.mapbox.com/mapbox-gl-js/' target='_blank'>Mapbox GL JS</a>
+              <br/>Graphing engine - <a href='https://d3js.org' target='_blank'>D3.js</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    
+    </div>
+
+    <!-- SIDE BAR -->
+    <div id='sidebar'>
+
+      <!-- LEGEND -->
+      <div id='legend'>
+
+        <!-- LEGEND/CONTENT -->
+        <div id='legend-content'>
+
+          <div class='line'>Sentiment Score</div>
+
+          <div class='line'>
+            <div class = 'av' id='pop_0'>&#9724;&#xFE0E;</div>
+            <div class='caption'>0&nbsp;-&nbsp;0.2</div>
+          </div>
+          <div class='line'>
+            <div class = 'av' id='pop_100'>&#9724;&#xFE0E;</div>
+            <div class='caption'>0.2&nbsp;-&nbsp;0.4</div>
+          </div>
+          <div class='line'>
+            <div class = 'av' id='pop_200'>&#9724;&#xFE0E;</div>
+            <div class='caption'>0.4&nbsp;-&nbsp;0.6</div>
+          </div>
+          <div class='line'>
+            <div class = 'av' id='pop_400'>&#9724;&#xFE0E;</div>
+            <div class='caption'>0.6&nbsp;-&nbsp;0.8</div>
+          </div>
+          <div class='line'>
+            <div class = 'av' id='pop_800'>&#9724;&#xFE0E;</div>
+            <div class='caption'>0.8&nbsp;-&nbsp;1.0</div>
+          </div>
+        </div>
+
+      </div>
+
+            <!-- LANDUSE FILTER -->
+            <div id='cbs' class='desktop'>
+
+              <!-- LANDUSE/CONTENT -->
+              <div id='cbs-content'>
+      
+                <div class='line'>Visible&nbsp;Districts:</div>
+      
+                <div class='line'>
+                  <input type='checkbox' id='cb1' class='cbn' checked>
+                  <span>&nbsp;Commercial Area</span>
+                </div>
+                <div class='line'>
+                  <input type='checkbox' id='cb2' class='cbn' checked>
+                  <span>&nbsp;Residential Area</span>
+                </div>
+                <div class='line'>
+                  <input type='checkbox' id='cb3' class='cbn' checked>
+                  <span>&nbsp;Recreation</span>
+                </div>
+                <div class='line'>
+                  <input type='checkbox' id='cb4' class='cbn' checked>
+                  <span>&nbsp;Transportation</span>
+                </div>
+                <div class='line'>
+                  <input type='checkbox' id='cb5' class='cbn' checked>
+                  <span>&nbsp;Manufacturing</span>
+                </div>   
+              </div>
+      
+            </div>
+
+    </div>
+
+    <!-- STORY MODE -->
+    <div id = 'storymode'>
+
+      <!-- STORY MODE/HEADER -->
+      <div id = 'storymode-header'>The Story of NYC Public Sentiment</div>
+
+      <!-- STORY MODE/CONTENT -->
+      <div id = 'storymode-content'>
+        <p style="font-size: 1.2em;">
+          The visualization you see here is a model of the dynamic public sentiment of Manhattan for a typical week in October 2019. The public sentiment score estimates are the result of a sentiment analysis on twitter data with a deep learning neural network. You may exit the story at any time by selecting the ‘Visualization’ tabs in the header above.  For more information, click ‘About’.  To continue, click the arrows below. 
+        </p>
+      </div>
+
+      <!-- STORY MODE/CONTROLS -->
+      <div class = 'noselect' id = 'storymode-controls'>
+
+        <!-- STORY MODE/CONTROLS/PAGE -->
+        <i class='arrow left' id = 'story-back'></i>
+        <span id = 'storymode-controls-numbers'>1 of 5</span>
+        <i class='arrow right' id = 'story-forward'></i>
+
+      </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <div id = 'controls'>
+      
+      <div id='slider-area-t'>
+        <div id='slider-t'></div>
+      </div>
+
+      <div id='slider-area-b'>
+        <div id='slider-b'></div>
+      </div>
+      
+    </div>
+    
+
+    <!-- MB Map -->
+    <div id='map'></div>
+
+    <!-- JS-MANPOP -->
+    <!-- <script src='scripts/DCtemp.js'></script> -->
+    <script src='scripts/nyc.js'></script>
+    <script src='scripts/nyc_story.js'></script>
+
+  </body>
+
+</html>
+
